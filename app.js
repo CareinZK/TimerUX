@@ -78,12 +78,15 @@ function updateButtons() {
   const hasTime = remainingSeconds > 0;
   const idle = !isRunning && !isPaused && !isFinished;
 
-  startBtn.textContent = isPaused ? "Resume" : isRunning ? "Running" : "Start";
+  startBtn.textContent = isPaused ? "Продолжить" : isRunning ? "Идёт" : "Старт";
   startBtn.disabled = isRunning || isFinished || (!hasTime && idle);
 
   pauseBtn.disabled = !isRunning;
-  resetBtn.textContent = isFinished ? "Stop" : "Reset";
+  resetBtn.textContent = isFinished ? "Стоп" : "Сброс";
   resetBtn.disabled = !isFinished && idle && !hasTime && totalSeconds === 0;
+
+  display.classList.toggle("is-hidden", idle);
+  display.setAttribute("aria-hidden", idle ? "true" : "false");
 }
 
 function tick() {
@@ -160,13 +163,13 @@ function finish() {
   display.classList.add("finished");
   display.classList.remove("running");
   setSetupEnabled(true);
-  setStatus("Time's up! Press Stop to silence the alarm.", "active");
+  setStatus("Время вышло! Нажмите «Стоп», чтобы выключить сигнал.", "active");
   updateButtons();
   updateDisplay();
   startAlarm();
 
   if (document.hidden && "Notification" in window && Notification.permission === "granted") {
-    new Notification("Timer finished", { body: "Your countdown has ended." });
+    new Notification("Таймер завершён", { body: "Обратный отсчёт завершён." });
   }
 }
 
@@ -181,14 +184,14 @@ function start() {
     display.classList.add("running");
     display.classList.remove("finished");
     setSetupEnabled(false);
-    setStatus("Timer running…");
+    setStatus("Таймер запущен…");
     updateButtons();
     return;
   }
 
   const duration = readDuration();
   if (duration <= 0) {
-    setStatus("Enter a duration greater than zero.", "error");
+    setStatus("Укажите длительность больше нуля.", "error");
     return;
   }
 
@@ -203,7 +206,7 @@ function start() {
   display.classList.add("running");
   display.classList.remove("finished");
   setSetupEnabled(false);
-  setStatus("Timer running…");
+  setStatus("Таймер запущен…");
   updateDisplay();
   updateButtons();
 }
@@ -216,7 +219,7 @@ function pause() {
   isPaused = true;
   remainingSeconds = Math.max(0, Math.round((endTimestamp - Date.now()) / 1000));
   endTimestamp = null;
-  setStatus("Paused");
+  setStatus("Пауза");
   updateButtons();
 }
 

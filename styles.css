@@ -6,6 +6,21 @@
   padding: 0;
 }
 
+.app{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+.project-note{
+    margin-top:auto; /* pushes it down naturally */
+
+    text-align:center;
+    font-size:14px;
+    opacity:0.5;
+    padding:20px;
+}
+
 :root {
   --bg: #0c0e14;
   --surface: #151922;
@@ -123,7 +138,11 @@ body {
   line-height: 1;
   margin-top: 0.5rem;
   z-index: 1;
-  transition: color 0.2s;
+  transition: color 0.2s, visibility 0.2s;
+}
+
+.display.is-hidden {
+  visibility: hidden;
 }
 
 .display.finished {

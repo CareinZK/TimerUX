@@ -42,7 +42,7 @@ function formatClock(total) {
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);
   const s = total % 60;
-  return `${pad2(h)} hours ${pad2(m)} minutes ${pad2(s)} seconds`;
+  return `${pad2(h)} ч. ${pad2(m)} мин. ${pad2(s)} сек.`;
 }
 
 function setMsg(text, isError = false) {
@@ -59,33 +59,33 @@ function setSelectsEnabled(enabled) {
 function updateReadout() {
   if (isFinished) {
     readout.innerHTML =
-      "<strong>STATUS: ELAPSED</strong><br>Countdown reached zero. Dismiss the system notice, then use Restore defaults.";
+      "<strong>СТАТУС: ИСТЕКЛО</strong><br>Обратный отсчёт достиг нуля. Закройте системное уведомление, затем нажмите «Восстановить по умолчанию».";
     return;
   }
 
   if (isRunning) {
     readout.innerHTML =
-      `<strong>${remainingSeconds}</strong> (seconds)<br>` +
-      `Approximate breakdown: ${formatClock(remainingSeconds)}<br>` +
-      "Note: value updates once per second.";
+      `<strong>${remainingSeconds}</strong> (секунд)<br>` +
+      `Приблизительная расшифровка: ${formatClock(remainingSeconds)}<br>` +
+      "Примечание: значение обновляется раз в секунду.";
     return;
   }
 
   if (isPaused) {
     readout.innerHTML =
-      `<strong>PAUSED</strong><br>${remainingSeconds} seconds on hold.<br>` +
+      `<strong>ПАУЗА</strong><br>${remainingSeconds} секунд на удержании.<br>` +
       `${formatClock(remainingSeconds)}`;
     return;
   }
 
   if (appliedSeconds > 0) {
     readout.innerHTML =
-      `Pending duration (applied): <strong>${appliedSeconds}</strong> seconds total.<br>` +
+      `Ожидающая длительность (зафиксирована): <strong>${appliedSeconds}</strong> секунд всего.<br>` +
       formatClock(appliedSeconds) +
-      "<br>Check the box below, then Activate.";
+      "<br>Отметьте поле ниже, затем запустите.";
   } else {
     readout.innerHTML =
-      "No duration applied. Adjust selectors, then press “Commit duration to device”.";
+      "Длительность не зафиксирована. Настройте списки, затем нажмите «Зафиксировать длительность на устройстве».";
   }
 }
 
@@ -95,24 +95,24 @@ function updateControls() {
 
   if (isFinished) {
     proceedBtn.disabled = true;
-    proceedBtn.textContent = "Activate countdown (elapsed)";
+    proceedBtn.textContent = "Запустить обратный отсчёт (истекло)";
     return;
   }
 
   if (isRunning) {
     proceedBtn.disabled = true;
-    proceedBtn.textContent = "Activate countdown (unavailable while running)";
+    proceedBtn.textContent = "Запустить обратный отсчёт (недоступно во время работы)";
     return;
   }
 
   if (isPaused) {
     proceedBtn.disabled = !confirmCheck.checked;
-    proceedBtn.textContent = "Activate countdown (resume — confirmation required)";
+    proceedBtn.textContent = "Запустить обратный отсчёт (продолжить — нужно подтверждение)";
     return;
   }
 
   proceedBtn.disabled = !(appliedSeconds > 0 && confirmCheck.checked);
-  proceedBtn.textContent = "Activate countdown";
+  proceedBtn.textContent = "Запустить обратный отсчёт";
 }
 
 function tick() {
@@ -136,7 +136,7 @@ function finish() {
   setMsg("");
   updateReadout();
   updateControls();
-  alert("Timer complete.\n\nThe countdown has ended. Click OK to continue.");
+  alert("Таймер завершён.\n\nОбратный отсчёт окончен. Нажмите ОК, чтобы продолжить.");
 }
 
 function applyDuration() {
@@ -144,21 +144,21 @@ function applyDuration() {
 
   const seconds = readSelects();
   if (seconds <= 0) {
-    setMsg("Duration must be greater than zero. Adjust selectors and commit again.", true);
+    setMsg("Длительность должна быть больше нуля. Настройте списки и зафиксируйте снова.", true);
     appliedSeconds = 0;
     updateReadout();
     updateControls();
     return;
   }
 
-  if (!window.confirm("Commit this duration?\n\nYou will still need to activate the countdown separately.")) {
+  if (!window.confirm("Зафиксировать эту длительность?\n\nЗапуск обратного отсчёта всё равно потребуется отдельно.")) {
     return;
   }
 
   appliedSeconds = seconds;
   remainingSeconds = seconds;
   confirmCheck.checked = false;
-  setMsg("Duration committed. Check the acknowledgment box, then activate.");
+  setMsg("Длительность зафиксирована. Отметьте поле подтверждения, затем запустите.");
   updateReadout();
   updateControls();
 }
@@ -167,31 +167,31 @@ function activate() {
   if (isRunning) return;
 
   if (!confirmCheck.checked) {
-    setMsg("You must check the acknowledgment box before activating.", true);
+    setMsg("Перед запуском необходимо отметить поле подтверждения.", true);
     return;
   }
 
   if (isPaused) {
-    if (!window.confirm("Resume the countdown from the paused value?")) return;
+    if (!window.confirm("Продолжить обратный отсчёт с приостановленного значения?")) return;
     endTimestamp = Date.now() + remainingSeconds * 1000;
     isRunning = true;
     isPaused = false;
     intervalId = setInterval(tick, 1000);
     setSelectsEnabled(false);
-    setMsg("Countdown advancing.");
+    setMsg("Обратный отсчёт продолжается.");
     updateReadout();
     updateControls();
     return;
   }
 
   if (appliedSeconds <= 0) {
-    setMsg("Commit a duration before activating.", true);
+    setMsg("Сначала зафиксируйте длительность.", true);
     return;
   }
 
   if (
     !window.confirm(
-      `Activate countdown for ${appliedSeconds} seconds?\n\n(${formatClock(appliedSeconds)})`
+      `Запустить обратный отсчёт на ${appliedSeconds} секунд?\n\n(${formatClock(appliedSeconds)})`
     )
   ) {
     return;
@@ -204,14 +204,14 @@ function activate() {
   isFinished = false;
   intervalId = setInterval(tick, 1000);
   setSelectsEnabled(false);
-  setMsg("Countdown advancing.");
+  setMsg("Обратный отсчёт продолжается.");
   updateReadout();
   updateControls();
 }
 
 function cease() {
   if (!isRunning) return;
-  if (!window.confirm("Cease temporal advance?\n\nThe countdown will pause.")) return;
+  if (!window.confirm("Остановить течение времени?\n\nОбратный отсчёт будет приостановлен.")) return;
 
   clearInterval(intervalId);
   intervalId = null;
@@ -220,7 +220,7 @@ function cease() {
   remainingSeconds = Math.max(0, Math.round((endTimestamp - Date.now()) / 1000));
   endTimestamp = null;
   setSelectsEnabled(false);
-  setMsg("Paused. Acknowledgment required to resume.");
+  setMsg("Пауза. Для продолжения нужно подтверждение.");
   confirmCheck.checked = false;
   updateReadout();
   updateControls();
@@ -228,7 +228,7 @@ function cease() {
 
 function restore() {
   if (isRunning) return;
-  if (!window.confirm("Restore factory timer defaults?\n\nThis clears your committed duration.")) {
+  if (!window.confirm("Восстановить заводские настройки таймера?\n\nЗафиксированная длительность будет сброшена.")) {
     return;
   }
 
@@ -254,7 +254,7 @@ function restore() {
 
 function preset(seconds) {
   if (isRunning || isPaused || isFinished) return;
-  if (!window.confirm(`Load preset of ${seconds} seconds? You must still commit and activate.`)) {
+  if (!window.confirm(`Загрузить пресет на ${seconds} секунд? Всё равно нужны фиксация и запуск.`)) {
     return;
   }
 
@@ -263,7 +263,7 @@ function preset(seconds) {
   secondsSelect.value = String(seconds % 60);
   appliedSeconds = 0;
   confirmCheck.checked = false;
-  setMsg("Preset loaded into selectors. Press Commit duration to device.");
+  setMsg("Пресет загружен в списки. Нажмите «Зафиксировать длительность на устройстве».");
   updateReadout();
   updateControls();
 }

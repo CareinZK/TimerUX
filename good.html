@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Timer — Good UX</title>
+  <title>Таймер — хороший UX</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
@@ -12,8 +12,8 @@
 <body>
   <main class="app">
     <header class="header">
-      <h1>Timer</h1>
-      <p class="subtitle">Set a duration and start counting down</p>
+      <h1>Таймер</h1>
+      <p class="subtitle">Задайте длительность и запустите обратный отсчёт</p>
     </header>
 
     <section class="timer-card" aria-live="polite">
@@ -24,45 +24,45 @@
         </svg>
       </div>
 
-      <div class="display" id="display" role="timer" aria-atomic="true">00:00:00</div>
+      <div class="display is-hidden" id="display" role="timer" aria-atomic="true" aria-hidden="true">00:00:00</div>
 
-      <form class="setup" id="setup-form" aria-label="Set timer duration">
+      <form class="setup" id="setup-form" aria-label="Установка длительности таймера">
         <div class="time-inputs">
           <label class="time-field">
-            <span>Hours</span>
+            <span>Часы</span>
             <input type="number" id="hours" min="0" max="99" value="0" inputmode="numeric" />
           </label>
           <span class="colon" aria-hidden="true">:</span>
           <label class="time-field">
-            <span>Minutes</span>
+            <span>Минуты</span>
             <input type="number" id="minutes" min="0" max="59" value="5" inputmode="numeric" />
           </label>
           <span class="colon" aria-hidden="true">:</span>
           <label class="time-field">
-            <span>Seconds</span>
+            <span>Секунды</span>
             <input type="number" id="seconds" min="0" max="59" value="0" inputmode="numeric" />
           </label>
         </div>
 
-        <div class="presets" aria-label="Quick presets">
-          <button type="button" class="preset" data-seconds="60">1 min</button>
-          <button type="button" class="preset" data-seconds="300">5 min</button>
-          <button type="button" class="preset" data-seconds="600">10 min</button>
-          <button type="button" class="preset" data-seconds="1500">25 min</button>
+        <div class="presets" aria-label="Быстрые пресеты">
+          <button type="button" class="preset" data-seconds="60">1 мин</button>
+          <button type="button" class="preset" data-seconds="300">5 мин</button>
+          <button type="button" class="preset" data-seconds="600">10 мин</button>
+          <button type="button" class="preset" data-seconds="1500">25 мин</button>
         </div>
       </form>
 
       <div class="controls">
-        <button type="button" class="btn btn-primary" id="start-btn">Start</button>
-        <button type="button" class="btn btn-secondary" id="pause-btn" disabled>Pause</button>
-        <button type="button" class="btn btn-ghost" id="reset-btn" disabled>Reset</button>
+        <button type="button" class="btn btn-primary" id="start-btn">Старт</button>
+        <button type="button" class="btn btn-secondary" id="pause-btn" disabled>Пауза</button>
+        <button type="button" class="btn btn-ghost" id="reset-btn" disabled>Сброс</button>
       </div>
     </section>
 
     <p class="status" id="status" role="status"></p>
 
     <footer class="app-footer">
-      <a class="app-back" href="index.html">Return to experience selection</a>
+      <a class="app-back" href="index.html">Вернуться к выбору варианта</a>
     </footer>
   </main>
 
