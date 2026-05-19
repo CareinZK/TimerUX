@@ -5,8 +5,7 @@ const setupForm = document.getElementById("setup-form");
 const hoursInput = document.getElementById("hours");
 const minutesInput = document.getElementById("minutes");
 const secondsInput = document.getElementById("seconds");
-const startBtn = document.getElementById("start-btn");
-const pauseBtn = document.getElementById("pause-btn");
+const toggleBtn = document.getElementById("toggle-btn");
 const resetBtn = document.getElementById("reset-btn");
 const statusEl = document.getElementById("status");
 const ringFg = document.querySelector(".ring-fg");
@@ -18,10 +17,7 @@ let endTimestamp = null;
 let isRunning = false;
 let isPaused = false;
 let isFinished = false;
-let alarmCtx = null;
-let alarmOsc = null;
-let alarmGain = null;
-let alarmPulseInterval = null;
+let alarmAudio = null;
 
 function clampInput(input, max) {
   let value = parseInt(input.value, 10);
@@ -75,15 +71,37 @@ function setSetupEnabled(enabled) {
 }
 
 function updateButtons() {
-  const hasTime = remainingSeconds > 0;
   const idle = !isRunning && !isPaused && !isFinished;
 
-  startBtn.textContent = isPaused ? "Продолжить" : isRunning ? "Идёт" : "Старт";
-  startBtn.disabled = isRunning || isFinished || (!hasTime && idle);
+  if (isFinished) {
+    toggleBtn.textContent = "Старт";
+    toggleBtn.disabled = true;
 
-  pauseBtn.disabled = !isRunning;
-  resetBtn.textContent = isFinished ? "Стоп" : "Сброс";
-  resetBtn.disabled = !isFinished && idle && !hasTime && totalSeconds === 0;
+    resetBtn.textContent = "Стоп";
+    resetBtn.disabled = false;
+    resetBtn.classList.add("is-stop");
+  } else if (isRunning) {
+    toggleBtn.textContent = "Пауза";
+    toggleBtn.disabled = false;
+
+    resetBtn.textContent = "Сброс";
+    resetBtn.disabled = false;
+    resetBtn.classList.remove("is-stop");
+  } else if (isPaused) {
+    toggleBtn.textContent = "Продолжить";
+    toggleBtn.disabled = false;
+
+    resetBtn.textContent = "Сброс";
+    resetBtn.disabled = false;
+    resetBtn.classList.remove("is-stop");
+  } else {
+    toggleBtn.textContent = "Старт";
+    toggleBtn.disabled = false;
+
+    resetBtn.textContent = "Сброс";
+    resetBtn.disabled = true;
+    resetBtn.classList.remove("is-stop");
+  }
 
   display.classList.toggle("is-hidden", idle);
   display.setAttribute("aria-hidden", idle ? "true" : "false");
@@ -98,8 +116,6 @@ function tick() {
     finish();
   }
 }
-
-let alarmAudio = null;
 
 function startAlarm() {
   stopAlarm();
@@ -129,14 +145,10 @@ function finish() {
   display.classList.add("finished");
   display.classList.remove("running");
   setSetupEnabled(true);
-  setStatus("Время вышло! Нажмите «Стоп», чтобы выключить звук.", "active");
+  setStatus("Время вышло!", "active");
   updateButtons();
   updateDisplay();
   startAlarm();
-
-  if (document.hidden && "Notification" in window && Notification.permission === "granted") {
-    new Notification("Таймер завершён", { body: "Обратный отсчёт завершён." });
-  }
 }
 
 function start() {
@@ -166,6 +178,7 @@ function start() {
   endTimestamp = Date.now() + duration * 1000;
   isRunning = true;
   isPaused = false;
+  isFinished = false;
 
   ringFg.style.strokeDasharray = String(CIRCUMFERENCE);
   intervalId = setInterval(tick, 200);
@@ -187,6 +200,14 @@ function pause() {
   endTimestamp = null;
   setStatus("Пауза");
   updateButtons();
+}
+
+function toggleTimer() {
+  if (isRunning) {
+    pause();
+  } else {
+    start();
+  }
 }
 
 function reset() {
@@ -220,13 +241,8 @@ document.querySelectorAll(".preset").forEach((btn) => {
   });
 });
 
-[startBtn, pauseBtn, resetBtn].forEach((btn) => {
-  btn.addEventListener("click", () => {
-    if (btn === startBtn) start();
-    else if (btn === pauseBtn) pause();
-    else reset();
-  });
-});
+toggleBtn.addEventListener("click", toggleTimer);
+resetBtn.addEventListener("click", reset);
 
 [hoursInput, minutesInput, secondsInput].forEach((input) => {
   input.addEventListener("change", () => {
