@@ -151,7 +151,7 @@ function applyDuration() {
     return;
   }
 
-  if (!window.confirm("Зафиксировать эту длительность?\n\nЗапуск обратного отсчёта всё равно потребуется отдельно.")) {
+  if (!window.confirm("Зафиксировать эту длительность?\n\n")) {
     return;
   }
 
@@ -254,7 +254,7 @@ function restore() {
 
 function preset(seconds) {
   if (isRunning || isPaused || isFinished) return;
-  if (!window.confirm(`Загрузить пресет на ${seconds} секунд? Всё равно нужны фиксация и запуск.`)) {
+  if (!window.confirm(`Загрузить пресет на ${seconds} секунд?`)) {
     return;
   }
 
