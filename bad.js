@@ -277,7 +277,7 @@ function preset(seconds) {
   updateControls();
 }
 
-populateSelect(hoursSelect, 23);
+populateSelect(hoursSelect, 99);
 populateSelect(minutesSelect, 59);
 populateSelect(secondsSelect, 59);
 minutesSelect.value = "5";
